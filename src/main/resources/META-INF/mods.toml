@@ -1,0 +1,13 @@
+modLoader="javafml"
+loaderVersion="[31,)"
+#issueTrackerURL=""
+
+[[mods]]
+modId="insane"
+version="${file.jarVersion}"
+displayName="Insane"
+#displayURL=""
+authors="Mrbysco, ShyNieke"
+description='''
+Does that make me crazy? Probably.
+'''
