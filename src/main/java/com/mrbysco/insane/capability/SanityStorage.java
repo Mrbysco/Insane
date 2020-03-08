@@ -7,17 +7,17 @@ import net.minecraftforge.common.capabilities.Capability;
 
 import javax.annotation.Nullable;
 
-public class SanityStorage implements Capability.IStorage<Sanity> {
+public class SanityStorage implements Capability.IStorage<ISanity> {
     @Nullable
     @Override
-    public INBT writeNBT(Capability<Sanity> capability, Sanity instance, Direction side) {
+    public INBT writeNBT(Capability<ISanity> capability, ISanity instance, Direction side) {
         CompoundNBT tag = new CompoundNBT();
         tag.putFloat("sanity", instance.getSanity());
         return null;
     }
 
     @Override
-    public void readNBT(Capability<Sanity> capability, Sanity instance, Direction side, INBT nbt) {
+    public void readNBT(Capability<ISanity> capability, ISanity instance, Direction side, INBT nbt) {
         CompoundNBT tag = (CompoundNBT) nbt;
         instance.setSanity(tag.getFloat("sanity"));
     }

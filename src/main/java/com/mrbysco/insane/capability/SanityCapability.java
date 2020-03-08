@@ -2,14 +2,14 @@ package com.mrbysco.insane.capability;
 
 import com.mrbysco.insane.config.InsaneConfig;
 
-public class Sanity implements ISanity {
+public class SanityCapability implements ISanity {
     public static float SANITY_MIN = InsaneConfig.COMMON.minSanity.get();
     public static float SANITY_MAX = InsaneConfig.COMMON.maxSanity.get();
     private float sanity;
     private boolean dirty;
 
-    public Sanity() {
-        this.sanity = Sanity.SANITY_MAX;
+    public SanityCapability() {
+        this.sanity = SanityCapability.SANITY_MAX;
     }
 
     @Override
