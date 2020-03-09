@@ -7,6 +7,7 @@ import com.mrbysco.insane.handler.CapabilityHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -16,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 @Mod(Reference.MOD_ID)
 public class Insane
 {
-    public static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
 
     public Insane() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -25,6 +26,12 @@ public class Insane
 //        eventBus.register(SpoiledConfig.class);
 
         eventBus.addListener(this::setup);
+
+        if(ModList.get().isLoaded("neat")) {
+            LOGGER.info("Time to share everyone's insanity");
+            LogManager.getLogger("Neat").info("Why would you do that?");
+            LOGGER.info("So I could put it under Neat");
+        }
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
