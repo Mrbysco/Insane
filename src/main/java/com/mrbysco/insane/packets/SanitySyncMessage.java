@@ -1,5 +1,6 @@
 package com.mrbysco.insane.packets;
 
+import com.mrbysco.insane.capability.ISanity;
 import com.mrbysco.insane.capability.SanityCapProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,15 +18,23 @@ public class SanitySyncMessage {
         this.data = buf.readCompoundTag();
     }
 
+    public SanitySyncMessage(ISanity cap) {
+        this.data = (CompoundNBT) SanityCapProvider.SANITY_CAPABILITY.writeNBT(cap, null);
+    }
+
     public SanitySyncMessage(CompoundNBT nbt) {
         this.data = nbt;
     }
 
-    void encode(PacketBuffer buf) {
+    public void encode(PacketBuffer buf) {
         buf.writeCompoundTag(data);
     }
 
-    void handle(Supplier<Context> context) {
+    public static SanitySyncMessage decode(final PacketBuffer packetBuffer) {
+        return new SanitySyncMessage(packetBuffer.readCompoundTag());
+    }
+
+    public void handle(Supplier<Context> context) {
         NetworkEvent.Context ctx = context.get();
         ctx.enqueueWork(() -> {
             if (ctx.getDirection().getReceptionSide().isClient() && ctx.getDirection().getOriginationSide().isServer()) {

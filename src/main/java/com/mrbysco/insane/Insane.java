@@ -4,6 +4,7 @@ import com.mrbysco.insane.capability.ISanity;
 import com.mrbysco.insane.capability.SanityCapability;
 import com.mrbysco.insane.capability.SanityStorage;
 import com.mrbysco.insane.handler.CapabilityHandler;
+import com.mrbysco.insane.packets.SanitySyncMessage;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -50,6 +51,7 @@ public class Insane
 
     private void setup(final FMLCommonSetupEvent event)
     {
+        CHANNEL.registerMessage(0, SanitySyncMessage.class, SanitySyncMessage::encode, SanitySyncMessage::decode, SanitySyncMessage::handle);
         CapabilityManager.INSTANCE.register(ISanity.class, new SanityStorage(), SanityCapability::new);
     }
 }
