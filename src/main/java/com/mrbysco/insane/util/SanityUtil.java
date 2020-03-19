@@ -5,11 +5,13 @@ import com.mrbysco.insane.capability.ISanity;
 import com.mrbysco.insane.packets.SanitySyncMessage;
 import net.minecraftforge.fml.network.PacketDistributor;
 
+import java.util.UUID;
+
 public class SanityUtil {
-    public static void syncSanity(ISanity sanity) {
+    public static void syncSanity(ISanity sanity, UUID uuid) {
         if (sanity.getSanity() > sanity.getSanityMax()){
             sanity.setSanity(sanity.getSanityMax());
         }
-        Insane.CHANNEL.send(PacketDistributor.ALL.noArg(), new SanitySyncMessage(sanity));
+        Insane.CHANNEL.send(PacketDistributor.ALL.noArg(), new SanitySyncMessage(sanity, uuid));
     }
 }
