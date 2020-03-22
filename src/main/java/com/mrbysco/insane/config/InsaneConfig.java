@@ -5,11 +5,11 @@ import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class InsaneConfig {
-    public static class Common {
+    public static class Server {
         public final ConfigValue<Float> minSanity;
         public final ConfigValue<Float> maxSanity;
 
-        Common(ForgeConfigSpec.Builder builder) {
+        Server(ForgeConfigSpec.Builder builder) {
             builder.comment("Client settings")
                     .push("client");
 
@@ -25,11 +25,11 @@ public class InsaneConfig {
         }
     }
 
-    public static final ForgeConfigSpec commonSpec;
-    public static final Common COMMON;
+    public static final ForgeConfigSpec serverSpec;
+    public static final Server SERVER;
     static {
-        final Pair<Common, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Common::new);
-        commonSpec = specPair.getRight();
-        COMMON = specPair.getLeft();
+        final Pair<Server, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Server::new);
+        serverSpec = specPair.getRight();
+        SERVER = specPair.getLeft();
     }
 }

@@ -3,6 +3,7 @@ package com.mrbysco.insane;
 import com.mrbysco.insane.capability.ISanity;
 import com.mrbysco.insane.capability.SanityCapability;
 import com.mrbysco.insane.capability.SanityStorage;
+import com.mrbysco.insane.config.InsaneConfig;
 import com.mrbysco.insane.handler.CapabilityHandler;
 import com.mrbysco.insane.packets.SanitySyncMessage;
 import net.minecraft.util.ResourceLocation;
@@ -10,7 +11,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
@@ -33,9 +36,8 @@ public class Insane
 
     public Insane() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-//        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, SpoiledConfig.clientSpec);
-//        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SpoiledConfig.serverSpec);
-//        eventBus.register(SpoiledConfig.class);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, InsaneConfig.serverSpec);
+        eventBus.register(InsaneConfig.class);
 
         eventBus.addListener(this::setup);
 

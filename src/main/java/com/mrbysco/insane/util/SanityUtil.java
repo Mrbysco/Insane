@@ -12,6 +12,6 @@ public class SanityUtil {
         if (sanity.getSanity() > sanity.getSanityMax()){
             sanity.setSanity(sanity.getSanityMax());
         }
-        Insane.CHANNEL.send(PacketDistributor.ALL.noArg(), new SanitySyncMessage(sanity, uuid));
+        Insane.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.noArg(), new SanitySyncMessage(sanity, uuid));
     }
 }
