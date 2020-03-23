@@ -3,13 +3,16 @@ package com.mrbysco.insane;
 import com.mrbysco.insane.capability.ISanity;
 import com.mrbysco.insane.capability.SanityCapability;
 import com.mrbysco.insane.capability.SanityStorage;
+import com.mrbysco.insane.client.ClientHandler;
 import com.mrbysco.insane.config.InsaneConfig;
 import com.mrbysco.insane.handler.CapabilityHandler;
 import com.mrbysco.insane.packets.SanitySyncMessage;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -49,6 +52,10 @@ public class Insane
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
+
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+            MinecraftForge.EVENT_BUS.register(new ClientHandler());
+        });
     }
 
     private void setup(final FMLCommonSetupEvent event)

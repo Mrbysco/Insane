@@ -6,6 +6,7 @@ import com.mrbysco.insane.capability.ISanity;
 import com.mrbysco.insane.capability.SanityCapProvider;
 import com.mrbysco.insane.capability.SanityCapability;
 import com.mrbysco.insane.packets.SanitySyncMessage;
+import com.mrbysco.insane.util.SanityUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -15,6 +16,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -36,7 +39,7 @@ public class CapabilityHandler {
             PlayerEntity player = event.getPlayer();
             LazyOptional<ISanity> sanityCap = player.getCapability(SanityCapProvider.SANITY_CAPABILITY, null);
             if(sanityCap.isPresent()) {
-                Insane.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), new SanitySyncMessage(sanityCap.orElse(new SanityCapability()), player.getUniqueID()));
+                Insane.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> player), new SanitySyncMessage(sanityCap.orElse(new SanityCapability()), player.getUniqueID()));
             }
         }
     }
@@ -59,6 +62,17 @@ public class CapabilityHandler {
                     Insane.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) joiningPlayer), new SanitySyncMessage(sanityCap.orElse(new SanityCapability()), player.getUniqueID()));
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void playerTickEvent(PlayerTickEvent event) {
+        if(event.phase == TickEvent.Phase.START)
+            return;
+
+        World world = event.player.world;
+        if(!world.isRemote && world.getGameTime() % 20 == 0) {
+            SanityUtil.addSanity(event.player, world.rand.nextFloat());
         }
     }
 }

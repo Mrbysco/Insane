@@ -3,8 +3,8 @@ package com.mrbysco.insane.capability;
 import com.mrbysco.insane.config.InsaneConfig;
 
 public class SanityCapability implements ISanity {
-    public static float SANITY_MIN = InsaneConfig.COMMON.minSanity.get();
-    public static float SANITY_MAX = InsaneConfig.COMMON.maxSanity.get();
+    public static float SANITY_MIN = (float)InsaneConfig.SERVER.minSanity.get();
+    public static float SANITY_MAX = (float)InsaneConfig.SERVER.maxSanity.get();
     private float sanity;
     private boolean dirty;
 
