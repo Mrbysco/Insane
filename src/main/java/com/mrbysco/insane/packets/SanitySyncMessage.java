@@ -1,8 +1,8 @@
 package com.mrbysco.insane.packets;
 
+import com.mrbysco.insane.Reference;
 import com.mrbysco.insane.capability.ISanity;
 import com.mrbysco.insane.capability.SanityCapProvider;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -46,10 +46,12 @@ public class SanitySyncMessage {
         ctx.enqueueWork(() -> {
             if (ctx.getDirection().getReceptionSide().isClient() && ctx.getDirection().getOriginationSide().isServer()) {
                 PlayerEntity player = Minecraft.getInstance().world.getPlayerByUuid(this.playerUUID);
-                player.getCapability(SanityCapProvider.SANITY_CAPABILITY, null)
+                if(player != null) {
+                    player.getCapability(SanityCapProvider.SANITY_CAPABILITY, null)
                         .ifPresent(sanityCap -> {
                             SanityCapProvider.SANITY_CAPABILITY.readNBT(sanityCap, null, data);
                         });
+                }
             }
         });
         ctx.setPacketHandled(true);

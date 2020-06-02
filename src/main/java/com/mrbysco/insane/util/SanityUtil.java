@@ -1,8 +1,10 @@
 package com.mrbysco.insane.util;
 
 import com.mrbysco.insane.Insane;
+import com.mrbysco.insane.Reference;
 import com.mrbysco.insane.capability.ISanity;
 import com.mrbysco.insane.capability.SanityCapProvider;
+import com.mrbysco.insane.capability.SanityCapability;
 import com.mrbysco.insane.packets.SanitySyncMessage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -18,22 +20,21 @@ public class SanityUtil {
 
     public static void addSanity(PlayerEntity player, double amount) {
         LazyOptional<ISanity> sanityCap = player.getCapability(SanityCapProvider.SANITY_CAPABILITY, null);
-        if(sanityCap.isPresent()) {
-            ISanity sanity = sanityCap.orElseThrow(NullPointerException::new);
-            double currentSanity = sanity.getSanity();
+        sanityCap.ifPresent(c -> {
+            double currentSanity = c.getSanity();
             double newSanity = currentSanity + amount;
-            if(newSanity > sanity.getSanityMax()) { newSanity = sanity.getSanityMax(); }
-            if(newSanity < sanity.getSanityMin()) { newSanity = sanity.getSanityMin(); }
+            if(newSanity > c.getSanityMax()) { newSanity = c.getSanityMax(); }
+            if(newSanity < c.getSanityMin()) { newSanity = c.getSanityMin(); }
 
-            sanity.setSanity(newSanity);
-            syncSanity(sanity, player);
-        }
+            c.setSanity(newSanity);
+            syncSanity(c, player);
+        });
     }
 
     public static double getSanity(PlayerEntity player) {
         LazyOptional<ISanity> sanityCap = player.getCapability(SanityCapProvider.SANITY_CAPABILITY, null);
         if(sanityCap.isPresent()) {
-            ISanity sanity = sanityCap.orElseThrow(NullPointerException::new);
+            ISanity sanity = sanityCap.orElse(new SanityCapability());
             return sanity.getSanity();
         }
         return 0;

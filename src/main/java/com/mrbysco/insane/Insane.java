@@ -61,6 +61,7 @@ public class Insane
     private void setup(final FMLCommonSetupEvent event)
     {
         CHANNEL.registerMessage(0, SanitySyncMessage.class, SanitySyncMessage::encode, SanitySyncMessage::decode, SanitySyncMessage::handle);
+
         CapabilityManager.INSTANCE.register(ISanity.class, new SanityStorage(), SanityCapability::new);
     }
 }

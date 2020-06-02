@@ -2,12 +2,13 @@ package com.mrbysco.insane.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class InsaneConfig {
     public static class Server {
-        public final ConfigValue<Float> minSanity;
-        public final ConfigValue<Float> maxSanity;
+        public final DoubleValue minSanity;
+        public final DoubleValue maxSanity;
 
         Server(ForgeConfigSpec.Builder builder) {
             builder.comment("Client settings")
@@ -15,11 +16,11 @@ public class InsaneConfig {
 
             minSanity = builder
                     .comment("The min Sanity value")
-                    .define("minSanity", -10.0F);
+                    .defineInRange("minSanity", -10.0D, Double.MIN_VALUE, Double.MAX_VALUE);
 
             maxSanity = builder
                     .comment("The max Sanity value")
-                    .define("maxSanity", 10.0F);
+                    .defineInRange("maxSanity", 10.0D, Double.MIN_VALUE, Double.MAX_VALUE);
 
             builder.pop();
         }
