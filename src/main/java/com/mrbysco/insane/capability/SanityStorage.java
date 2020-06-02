@@ -12,13 +12,12 @@ public class SanityStorage implements Capability.IStorage<ISanity> {
     @Override
     public INBT writeNBT(Capability<ISanity> capability, ISanity instance, Direction side) {
         CompoundNBT tag = new CompoundNBT();
-        tag.putFloat("sanity", instance.getSanity());
-        return null;
+        tag.putDouble("sanity", instance.getSanity());
+        return tag;
     }
 
     @Override
     public void readNBT(Capability<ISanity> capability, ISanity instance, Direction side, INBT nbt) {
-        CompoundNBT tag = (CompoundNBT) nbt;
-        instance.setSanity(tag.getFloat("sanity"));
+        instance.setSanity(((CompoundNBT) nbt).getDouble("sanity"));
     }
 }

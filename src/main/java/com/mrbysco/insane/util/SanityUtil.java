@@ -16,17 +16,26 @@ public class SanityUtil {
         Insane.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new SanitySyncMessage(sanity, player.getUniqueID()));
     }
 
-    public static void addSanity(PlayerEntity player, float amount) {
+    public static void addSanity(PlayerEntity player, double amount) {
         LazyOptional<ISanity> sanityCap = player.getCapability(SanityCapProvider.SANITY_CAPABILITY, null);
         if(sanityCap.isPresent()) {
             ISanity sanity = sanityCap.orElseThrow(NullPointerException::new);
-            float currentSanity = sanity.getSanity();
-            float newSanity = currentSanity + amount;
+            double currentSanity = sanity.getSanity();
+            double newSanity = currentSanity + amount;
             if(newSanity > sanity.getSanityMax()) { newSanity = sanity.getSanityMax(); }
             if(newSanity < sanity.getSanityMin()) { newSanity = sanity.getSanityMin(); }
 
             sanity.setSanity(newSanity);
             syncSanity(sanity, player);
         }
+    }
+
+    public static double getSanity(PlayerEntity player) {
+        LazyOptional<ISanity> sanityCap = player.getCapability(SanityCapProvider.SANITY_CAPABILITY, null);
+        if(sanityCap.isPresent()) {
+            ISanity sanity = sanityCap.orElseThrow(NullPointerException::new);
+            return sanity.getSanity();
+        }
+        return 0;
     }
 }

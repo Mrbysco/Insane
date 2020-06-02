@@ -3,9 +3,9 @@ package com.mrbysco.insane.capability;
 import com.mrbysco.insane.config.InsaneConfig;
 
 public class SanityCapability implements ISanity {
-    public static float SANITY_MIN = (float)InsaneConfig.SERVER.minSanity.get();
-    public static float SANITY_MAX = (float)InsaneConfig.SERVER.maxSanity.get();
-    private float sanity;
+    public static double SANITY_MIN = InsaneConfig.SERVER.minSanity.get().doubleValue();
+    public static double SANITY_MAX = InsaneConfig.SERVER.maxSanity.get().doubleValue();
+    private double sanity;
     private boolean dirty;
 
     public SanityCapability() {
@@ -13,12 +13,12 @@ public class SanityCapability implements ISanity {
     }
 
     @Override
-    public float getSanity() {
+    public double getSanity() {
         return sanity;
     }
 
     @Override
-    public void setSanity(float sanity) {
+    public void setSanity(double sanity) {
         if (sanity > getSanityMax()){
             this.sanity = getSanityMax();
             this.dirty = true;
@@ -39,12 +39,12 @@ public class SanityCapability implements ISanity {
     }
 
     @Override
-    public float getSanityMin() {
+    public double getSanityMin() {
         return SANITY_MIN;
     }
 
     @Override
-    public float getSanityMax() {
+    public double getSanityMax() {
         return SANITY_MAX;
     }
 

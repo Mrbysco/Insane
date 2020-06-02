@@ -13,20 +13,18 @@ apply plugin: 'net.minecraftforge.gradle'
 // apply plugin: 'eclipse'
 // apply plugin: 'maven-publish'
 
-version = '1.0'
+version = "${version}"
 group = 'com.mrbysco.insane' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'Insane'
+archivesBaseName = "Insane-${mc_version}"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200302-1.15.1'
+    mappings  channel: "${mcp_channel}", version: "${mcp_mappings}"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
-    // Default run configurations.
-    // These can be tweaked, removed, or duplicated as needed.
     runs {
         client {
             workingDirectory project.file('run')
@@ -99,8 +97,8 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.2-31.1.18'
-    compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-1.15.2:6.0.0.9")
+    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+    compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${mc_version}:${crafttweaker_version}")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

@@ -24,6 +24,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.List;
+import java.util.Random;
 
 public class CapabilityHandler {
     @SubscribeEvent
@@ -72,7 +73,15 @@ public class CapabilityHandler {
 
         World world = event.player.world;
         if(!world.isRemote && world.getGameTime() % 20 == 0) {
-            SanityUtil.addSanity(event.player, world.rand.nextFloat());
+            SanityUtil.addSanity(event.player, getRandDouble(world.rand));
+        }
+    }
+
+    public double getRandDouble(Random rand) {
+        if(rand.nextBoolean()) {
+            return -rand.nextDouble();
+        } else {
+            return rand.nextDouble();
         }
     }
 }

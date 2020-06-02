@@ -34,6 +34,7 @@ public class SanitySyncMessage {
 
     public void encode(PacketBuffer buf) {
         buf.writeCompoundTag(data);
+        buf.writeUniqueId(playerUUID);
     }
 
     public static SanitySyncMessage decode(final PacketBuffer packetBuffer) {

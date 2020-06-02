@@ -1,15 +1,15 @@
 package com.mrbysco.insane.capability;
 
 public interface ISanity {
-    float getSanity();
+    double getSanity();
 
-    void setSanity(float sanity);
+    void setSanity(double sanity);
 
     boolean isDirty();
 
     void setDirty(boolean dirty);
 
-    float getSanityMax();
+    double getSanityMax();
 
-    float getSanityMin();
+    double getSanityMin();
 }
