@@ -2,9 +2,12 @@ package com.mrbysco.insane.capability;
 
 import com.mrbysco.insane.config.InsaneConfig;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class SanityCapability implements ISanity {
-    public static double SANITY_MIN = InsaneConfig.SERVER.minSanity.get().doubleValue();
-    public static double SANITY_MAX = InsaneConfig.SERVER.maxSanity.get().doubleValue();
+    public static double SANITY_MIN = 0.0D;
+    public static double SANITY_MAX = InsaneConfig.COMMON.maxSanity.get().doubleValue();
     private double sanity;
     private boolean dirty;
 
@@ -29,8 +32,14 @@ public class SanityCapability implements ISanity {
             this.dirty = true;
             return;
         }
-        this.sanity = sanity;
+        this.sanity = sanityRounded(sanity);
         this.dirty = true;
+    }
+
+    public double sanityRounded(double sanity) {
+        BigDecimal bd = BigDecimal.valueOf(sanity);
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     @Override

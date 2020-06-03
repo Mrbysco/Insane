@@ -1,7 +1,6 @@
 package com.mrbysco.insane.util;
 
 import com.mrbysco.insane.Insane;
-import com.mrbysco.insane.Reference;
 import com.mrbysco.insane.capability.ISanity;
 import com.mrbysco.insane.capability.SanityCapProvider;
 import com.mrbysco.insane.capability.SanityCapability;
@@ -25,7 +24,6 @@ public class SanityUtil {
             double newSanity = currentSanity + amount;
             if(newSanity > c.getSanityMax()) { newSanity = c.getSanityMax(); }
             if(newSanity < c.getSanityMin()) { newSanity = c.getSanityMin(); }
-
             c.setSanity(newSanity);
             syncSanity(c, player);
         });

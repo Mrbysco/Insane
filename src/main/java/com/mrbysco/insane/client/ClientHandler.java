@@ -10,13 +10,10 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 public class ClientHandler {
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onPreRender(RenderGameOverlayEvent.Post event) {
-        if (event.getType() != RenderGameOverlayEvent.ElementType.HEALTH)
+        if (event.getType() != RenderGameOverlayEvent.ElementType.ALL)
             return;
 
         Minecraft mc = Minecraft.getInstance();
@@ -29,13 +26,7 @@ public class ClientHandler {
         if(sanityCap.isPresent()) {
             ISanity sanity = sanityCap.orElseThrow(NullPointerException::new);
 
-            mc.ingameGUI.drawString(mc.fontRenderer, String.valueOf(sanityRounded(sanity.getSanity())), left, top,553648127);
+            mc.ingameGUI.drawString(mc.fontRenderer, String.valueOf(sanity.getSanity()), left, top,553648127);
         }
-    }
-
-    public double sanityRounded(double originalSanity) {
-        BigDecimal bd = BigDecimal.valueOf(originalSanity);
-        bd = bd.setScale(2, RoundingMode.HALF_UP);
-        return bd.doubleValue();
     }
 }

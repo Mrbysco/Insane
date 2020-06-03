@@ -1,6 +1,5 @@
 package com.mrbysco.insane.packets;
 
-import com.mrbysco.insane.Reference;
 import com.mrbysco.insane.capability.ISanity;
 import com.mrbysco.insane.capability.SanityCapProvider;
 import net.minecraft.client.Minecraft;
