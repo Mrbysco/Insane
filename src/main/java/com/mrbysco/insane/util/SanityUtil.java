@@ -29,6 +29,14 @@ public class SanityUtil {
         });
     }
 
+    public static void setSanity(PlayerEntity player, double newSanity) {
+        LazyOptional<ISanity> sanityCap = player.getCapability(SanityCapProvider.SANITY_CAPABILITY, null);
+        sanityCap.ifPresent(c -> {
+            c.setSanity(newSanity);
+            syncSanity(c, player);
+        });
+    }
+
     public static double getSanity(PlayerEntity player) {
         LazyOptional<ISanity> sanityCap = player.getCapability(SanityCapProvider.SANITY_CAPABILITY, null);
         if(sanityCap.isPresent()) {

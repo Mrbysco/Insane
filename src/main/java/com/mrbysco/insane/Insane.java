@@ -4,6 +4,7 @@ import com.mrbysco.insane.capability.ISanity;
 import com.mrbysco.insane.capability.SanityCapability;
 import com.mrbysco.insane.capability.SanityStorage;
 import com.mrbysco.insane.client.ClientHandler;
+import com.mrbysco.insane.commands.InsaneCommands;
 import com.mrbysco.insane.config.InsaneConfig;
 import com.mrbysco.insane.handler.CapabilityHandler;
 import com.mrbysco.insane.handler.SanityHandler;
@@ -13,19 +14,20 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -45,6 +47,8 @@ public class Insane
     public static HashMap<ResourceLocation, Double> entitySanityMap = new HashMap<>();
     public static HashMap<ResourceLocation, Double> foodSanityMap = new HashMap<>();
     public static HashMap<ResourceLocation, Double> craftingItemList = new HashMap<>();
+    public static HashMap<ResourceLocation, Double> pickupItemList = new HashMap<>();
+    public static HashMap<ResourceLocation, Double> blockBreakList = new HashMap<>();
 
     public Insane() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -62,10 +66,9 @@ public class Insane
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
         MinecraftForge.EVENT_BUS.register(new SanityHandler());
+        MinecraftForge.EVENT_BUS.addListener(this::onServerStarting);
 
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            MinecraftForge.EVENT_BUS.register(new ClientHandler());
-        });
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> MinecraftForge.EVENT_BUS.register(new ClientHandler()));
     }
 
     private void setup(final FMLCommonSetupEvent event)
@@ -83,7 +86,7 @@ public class Insane
                 String[] array = string.split(",");
                 if(array.length == 2) {
                     ResourceLocation location = new ResourceLocation(array[0]);
-                    double amount = new Double(array[1]).doubleValue();
+                    double amount = new Double(array[1]);
 
                     entityMap.put(location, amount);
                 }
@@ -98,9 +101,9 @@ public class Insane
                 String[] array = string.split(",");
                 if(array.length == 2) {
                     ResourceLocation location = new ResourceLocation(array[0]);
-                    double amount = new Double(array[1]).doubleValue();
+                    double amount = new Double(array[1]);
 
-                    entityMap.put(location, amount);
+                    foodMap.put(location, amount);
                 }
             }
         }
@@ -113,12 +116,47 @@ public class Insane
                 String[] array = string.split(",");
                 if(array.length == 2) {
                     ResourceLocation location = new ResourceLocation(array[0]);
-                    double amount = new Double(array[1]).doubleValue();
+                    double amount = new Double(array[1]);
 
-                    entityMap.put(location, amount);
+                    craftingMap.put(location, amount);
                 }
             }
         }
         craftingItemList = craftingMap;
+
+        HashMap<ResourceLocation, Double> pickupMap = new HashMap<>();
+        List<? extends String> pickupItems = InsaneConfig.COMMON.pickupItemList.get();
+        if(!pickupItems.isEmpty()) {
+            for(String string : pickupItems) {
+                String[] array = string.split(",");
+                if(array.length == 2) {
+                    ResourceLocation location = new ResourceLocation(array[0]);
+                    double amount = new Double(array[1]);
+
+                    pickupMap.put(location, amount);
+                }
+            }
+        }
+        pickupItemList = pickupMap;
+
+        HashMap<ResourceLocation, Double> blockBreakMap = new HashMap<>();
+        List<? extends String> blockBrokenList = InsaneConfig.COMMON.blockBrokenList.get();
+        if(!blockBrokenList.isEmpty()) {
+            for(String string : blockBrokenList) {
+                String[] array = string.split(",");
+                if(array.length == 2) {
+                    ResourceLocation location = new ResourceLocation(array[0]);
+                    double amount = new Double(array[1]);
+
+                    blockBreakMap.put(location, amount);
+                }
+            }
+        }
+        blockBreakList = blockBreakMap;
+    }
+
+    @SubscribeEvent
+    public void onServerStarting (FMLServerStartingEvent event) {
+        InsaneCommands.initializeCommands(event.getCommandDispatcher());
     }
 }

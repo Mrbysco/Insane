@@ -14,9 +14,12 @@ import java.util.List;
 public class InsaneConfig {
     public static class Common {
         public final DoubleValue maxSanity;
+        public final DoubleValue darknessSanity;
         public final ConfigValue<List<? extends String>> mobDamageList;
         public final ConfigValue<List<? extends String>> rawFoodList;
         public final ConfigValue<List<? extends String>> craftingItemList;
+        public final ConfigValue<List<? extends String>> pickupItemList;
+        public final ConfigValue<List<? extends String>> blockBrokenList;
 
         Common(ForgeConfigSpec.Builder builder) {
             builder.comment("Sanity settings")
@@ -25,6 +28,14 @@ public class InsaneConfig {
             maxSanity = builder
                     .comment("The max Sanity value [Default: 100.0]")
                     .defineInRange("maxSanity", 100.0f, 0.01D, Double.MAX_VALUE);
+
+            darknessSanity = builder
+                    .comment("The amount of sanity lost per second when in total darkness [Default: -50.0]")
+                    .defineInRange("darknessSanity", -50.0f, -1000.0f, 0);
+
+            builder.pop();
+            builder.comment("Sanity lists")
+                    .push("Sanity_Lists");
 
             String[] mobList = new String[] {
                 "minecraft:cave_spider,-0.5",
@@ -53,7 +64,7 @@ public class InsaneConfig {
             };
 
             mobDamageList = builder
-                    .comment("Defines the insanity gained/lost from getting hurt by mobs " +
+                    .comment("Defines the insanity gained/lost from getting hurt by mobs "+
                             "[Syntax: 'modid:mob_name,sanity']" +
                             "[Example: 'minecraft:zombie,-0.5']")
                     .defineList("mobDamageList", Arrays.asList(mobList), o -> (o instanceof String));
@@ -73,7 +84,7 @@ public class InsaneConfig {
                     "minecraft:poisonous_potato,-3.5"
             };
             rawFoodList = builder
-                    .comment("Defines the insanity gained/lost from eating certain food" +
+                    .comment("Defines the insanity gained/lost from eating certain food"+
                             "[Syntax: 'modid:itemName,sanity']" +
                             "[Example: 'minecraft:beef,-2.5']")
                     .defineList("rawFoodList", Arrays.asList(rawFood), o -> (o instanceof String));
@@ -82,19 +93,37 @@ public class InsaneConfig {
                     ""
             };
             craftingItemList = builder
-                    .comment("Defines the insanity gained/lost from crafting certain items" +
+                    .comment("Defines the insanity gained/lost from crafting certain items"+
                             "[Syntax: 'modid:itemName,sanity']" +
                             "[Example: 'minecraft:wooden_sword,-2.0']")
                     .defineList("craftingItemList", Arrays.asList(itemArray), o -> (o instanceof String));
+
+            String[] pickupArray = new String[] {
+                    ""
+            };
+            pickupItemList = builder
+                    .comment("Defines the insanity gained/lost from picking up certain items for the first time"+
+                            "[Syntax: 'modid:itemName,sanity']" +
+                            "[Example: 'minecraft:cornflower,2.0']")
+                    .defineList("pickupItemList", Arrays.asList(pickupArray), o -> (o instanceof String));
+
+            String[] breakBlockArray = new String[] {
+                    ""
+            };
+            blockBrokenList = builder
+                    .comment("Defines the insanity gained/lost from breaking certain blocks"+
+                            "[Syntax: 'modid:itemName,sanity']" +
+                            "[Example: 'minecraft:soul_sand,-2.0']")
+                    .defineList("blockBrokenList", Arrays.asList(breakBlockArray), o -> (o instanceof String));
 
             builder.pop();
         }
     }
 
     public static final ForgeConfigSpec commonSpec;
-    public static final Common COMMON;
+    public static final InsaneConfig.Common COMMON;
     static {
-        final Pair<Common, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Common::new);
+        final Pair<Common, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(InsaneConfig.Common::new);
         commonSpec = specPair.getRight();
         COMMON = specPair.getLeft();
     }

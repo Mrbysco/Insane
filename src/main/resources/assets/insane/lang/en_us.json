@@ -1,1 +1,5 @@
-{}
+{
+  "commands.insane.get.success": "%s currently has %s sanity",
+  "commands.insane.set.success": "%s's sanity has been set to %s",
+  "commands.insane.add.success": "%s has been added to %s's sanity. Current sanity: %s"
+}
