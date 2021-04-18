@@ -13,6 +13,7 @@ import java.util.List;
 
 public class InsaneConfig {
     public static class Common {
+        public final DoubleValue minSanity;
         public final DoubleValue maxSanity;
         public final DoubleValue darknessSanity;
         public final ConfigValue<List<? extends String>> mobDamageList;
@@ -24,6 +25,10 @@ public class InsaneConfig {
         Common(ForgeConfigSpec.Builder builder) {
             builder.comment("Sanity settings")
                     .push("Sanity");
+
+            minSanity = builder
+                    .comment("The min Sanity value [Default: 0.0]")
+                    .defineInRange("maxSanity", 0.0F, Double.MIN_VALUE, Double.MAX_VALUE);
 
             maxSanity = builder
                     .comment("The max Sanity value [Default: 100.0]")

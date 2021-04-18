@@ -53,28 +53,29 @@ public class ClientHandler {
 
         int brainStage = 0;
         if(pct <= 0.33D) {
-            brainStage = 56;
+            brainStage = 48;
         } else if(pct <= 0.66D) {
-            brainStage = 28;
+            brainStage = 24;
         }
 
         double scaleFactor = mc.getMainWindow().getGuiScaleFactor();
-        int guiLeft = mc.getMainWindow().getScaledWidth() ;
-        int guiTop = mc.getMainWindow().getScaledHeight() - ForgeIngameGui.right_height;
+        if(mc.getMainWindow().getGuiScaleFactor() > 2.0D) {
+            scaleFactor = 1.0D;
+        }
 
-        Screen.blit(matrixStack, (int)scaleFactor * 20, (int)scaleFactor * 20, (int)(34 * scaleFactor), (int)(2 * scaleFactor),
+        Screen.blit(matrixStack, (int)scaleFactor * 20, (int)scaleFactor * 20, (int)(32 * scaleFactor), (int)(0 * scaleFactor),
                 (int)(24 * scaleFactor), (int)(24 * scaleFactor),
                 (int)(256 * scaleFactor), (int)(256 * scaleFactor));
 
-        Screen.blit(matrixStack, (int)scaleFactor * 20, (int)(scaleFactor * (20 + Math.ceil((24 - 24 * pct)))), (int)(32 * scaleFactor), (int)(32 * scaleFactor),
+        Screen.blit(matrixStack, (int)scaleFactor * 20, (int)(scaleFactor * (20 + Math.ceil((24 - 24 * pct)))), (int)(32 * scaleFactor), (int)(24 * scaleFactor),
                 (int)(24 * scaleFactor), (int)(24 * pct * scaleFactor),
                 (int)(256 * scaleFactor), (int)(256 * scaleFactor));
 
-        Screen.blit(matrixStack, (int)scaleFactor * 18, (int)scaleFactor * 18, (int)(60 * scaleFactor), (int)(brainStage * scaleFactor),
-                (int)(28 * scaleFactor), (int)(28 * scaleFactor),
+        Screen.blit(matrixStack, (int)scaleFactor * 20, (int)scaleFactor * 20, (int)(80 * scaleFactor), (int)(brainStage * scaleFactor),
+                (int)(24 * scaleFactor), (int)(24 * scaleFactor),
                 (int)(256 * scaleFactor), (int)(256 * scaleFactor));
 
-        Screen.blit(matrixStack, 32, 32, 0, 0,
+        Screen.blit(matrixStack, (int)scaleFactor * 16, (int)scaleFactor * 16, 0, 0,
                 (int)(32 * scaleFactor), (int)(32 * scaleFactor),
                 (int)(256 * scaleFactor), (int)(256 * scaleFactor));
     }

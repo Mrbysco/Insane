@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class SanityCapability implements ISanity {
-    public static double SANITY_MIN = 0.0D;
+    public static double SANITY_MIN = InsaneConfig.COMMON.minSanity.get();
     public static double SANITY_MAX = InsaneConfig.COMMON.maxSanity.get();
     private double sanity;
     private boolean dirty;

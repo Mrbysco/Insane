@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mrbysco.insane.config.InsaneConfig;
 import com.mrbysco.insane.util.SanityUtil;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -35,7 +36,7 @@ public class InsaneCommands {
     private static int setSanity(CommandContext<CommandSource> ctx, boolean silent) throws CommandSyntaxException {
         final double sanity = DoubleArgumentType.getDouble(ctx, "sanity");
         for(ServerPlayerEntity player : EntityArgument.getPlayers(ctx, "player")) {
-            if(sanity > 0) {
+            if(sanity >= InsaneConfig.COMMON.minSanity.get() && sanity <= InsaneConfig.COMMON.maxSanity.get()) {
                 SanityUtil.setSanity(player, sanity);
                 if(!silent) {
                     ctx.getSource().sendFeedback(new TranslationTextComponent("commands.insane.set.success", player.getDisplayName(), sanity), false);
