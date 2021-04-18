@@ -33,9 +33,7 @@ public class CapabilityHandler {
         if(event.getPlayer() instanceof ServerPlayerEntity) {
             PlayerEntity player = event.getPlayer();
             LazyOptional<ISanity> sanityCap = player.getCapability(SanityCapProvider.SANITY_CAPABILITY, null);
-            sanityCap.ifPresent(c -> {
-                Insane.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> player), new SanitySyncMessage(c, player.getUniqueID()));
-            });
+            sanityCap.ifPresent(c -> Insane.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> player), new SanitySyncMessage(c, player.getUniqueID())));
         }
     }
 
@@ -52,16 +50,12 @@ public class CapabilityHandler {
 
             //Send the joining player their own Sanity to their client
             LazyOptional<ISanity> playerCap = joiningPlayer.getCapability(SanityCapProvider.SANITY_CAPABILITY, null);
-            playerCap.ifPresent(c -> {
-                Insane.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) joiningPlayer), new SanitySyncMessage(c, joiningPlayer.getUniqueID()));
-            });
+            playerCap.ifPresent(c -> Insane.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) joiningPlayer), new SanitySyncMessage(c, joiningPlayer.getUniqueID())));
             //Send the joining player the sanity of nearby players
             List<PlayerEntity> nearbyPlayers = world.getEntitiesWithinAABB(PlayerEntity.class, hitbox);
             for (PlayerEntity player : nearbyPlayers) {
                 LazyOptional<ISanity> sanityCap = player.getCapability(SanityCapProvider.SANITY_CAPABILITY, null);
-                sanityCap.ifPresent(c -> {
-                    Insane.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) joiningPlayer), new SanitySyncMessage(c, player.getUniqueID()));
-                });
+                sanityCap.ifPresent(c -> Insane.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) joiningPlayer), new SanitySyncMessage(c, player.getUniqueID())));
             }
         }
     }

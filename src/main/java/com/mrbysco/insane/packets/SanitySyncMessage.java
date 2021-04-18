@@ -13,8 +13,8 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public class SanitySyncMessage {
-    private CompoundNBT data;
-    private UUID playerUUID;
+    private final CompoundNBT data;
+    private final UUID playerUUID;
 
     private SanitySyncMessage(PacketBuffer buf) {
         this.data = buf.readCompoundTag();

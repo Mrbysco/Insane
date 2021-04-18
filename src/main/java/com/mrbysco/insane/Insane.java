@@ -13,6 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -21,7 +22,6 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -32,8 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Mod(Reference.MOD_ID)
-public class Insane
-{
+public class Insane {
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
 
     private static final String PROTOCOL_VERSION = "1";
@@ -44,11 +43,11 @@ public class Insane
             PROTOCOL_VERSION::equals
     );
 
-    public static HashMap<ResourceLocation, Double> entitySanityMap = new HashMap<>();
-    public static HashMap<ResourceLocation, Double> foodSanityMap = new HashMap<>();
-    public static HashMap<ResourceLocation, Double> craftingItemList = new HashMap<>();
-    public static HashMap<ResourceLocation, Double> pickupItemList = new HashMap<>();
-    public static HashMap<ResourceLocation, Double> blockBreakList = new HashMap<>();
+    public static final HashMap<ResourceLocation, Double> entitySanityMap = new HashMap<>();
+    public static final HashMap<ResourceLocation, Double> foodSanityMap = new HashMap<>();
+    public static final HashMap<ResourceLocation, Double> craftingItemList = new HashMap<>();
+    public static final HashMap<ResourceLocation, Double> pickupItemList = new HashMap<>();
+    public static final HashMap<ResourceLocation, Double> blockBreakList = new HashMap<>();
 
     public Insane() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -66,20 +65,19 @@ public class Insane
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
         MinecraftForge.EVENT_BUS.register(new SanityHandler());
-        MinecraftForge.EVENT_BUS.addListener(this::onServerStarting);
+        MinecraftForge.EVENT_BUS.addListener(this::onCommandRegister);
 
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> MinecraftForge.EVENT_BUS.register(new ClientHandler()));
     }
 
-    private void setup(final FMLCommonSetupEvent event)
-    {
+    private void setup(final FMLCommonSetupEvent event) {
         CHANNEL.registerMessage(0, SanitySyncMessage.class, SanitySyncMessage::encode, SanitySyncMessage::decode, SanitySyncMessage::handle);
 
         CapabilityManager.INSTANCE.register(ISanity.class, new SanityStorage(), SanityCapability::new);
     }
 
     public static void updateMaps() {
-        HashMap<ResourceLocation, Double> entityMap = new HashMap<>();
+        entitySanityMap.clear();
         List<? extends String> mobList = InsaneConfig.COMMON.mobDamageList.get();
         if(!mobList.isEmpty()) {
             for(String string : mobList) {
@@ -88,13 +86,12 @@ public class Insane
                     ResourceLocation location = new ResourceLocation(array[0]);
                     double amount = new Double(array[1]);
 
-                    entityMap.put(location, amount);
+                    entitySanityMap.put(location, amount);
                 }
             }
         }
-        entitySanityMap = entityMap;
 
-        HashMap<ResourceLocation, Double> foodMap = new HashMap<>();
+        foodSanityMap.clear();
         List<? extends String> foodList = InsaneConfig.COMMON.rawFoodList.get();
         if(!foodList.isEmpty()) {
             for(String string : foodList) {
@@ -103,13 +100,12 @@ public class Insane
                     ResourceLocation location = new ResourceLocation(array[0]);
                     double amount = new Double(array[1]);
 
-                    foodMap.put(location, amount);
+                    foodSanityMap.put(location, amount);
                 }
             }
         }
-        foodSanityMap = foodMap;
 
-        HashMap<ResourceLocation, Double> craftingMap = new HashMap<>();
+        craftingItemList.clear();
         List<? extends String> craftingItems = InsaneConfig.COMMON.craftingItemList.get();
         if(!craftingItems.isEmpty()) {
             for(String string : craftingItems) {
@@ -118,13 +114,12 @@ public class Insane
                     ResourceLocation location = new ResourceLocation(array[0]);
                     double amount = new Double(array[1]);
 
-                    craftingMap.put(location, amount);
+                    craftingItemList.put(location, amount);
                 }
             }
         }
-        craftingItemList = craftingMap;
 
-        HashMap<ResourceLocation, Double> pickupMap = new HashMap<>();
+        pickupItemList.clear();
         List<? extends String> pickupItems = InsaneConfig.COMMON.pickupItemList.get();
         if(!pickupItems.isEmpty()) {
             for(String string : pickupItems) {
@@ -133,13 +128,12 @@ public class Insane
                     ResourceLocation location = new ResourceLocation(array[0]);
                     double amount = new Double(array[1]);
 
-                    pickupMap.put(location, amount);
+                    pickupItemList.put(location, amount);
                 }
             }
         }
-        pickupItemList = pickupMap;
 
-        HashMap<ResourceLocation, Double> blockBreakMap = new HashMap<>();
+        blockBreakList.clear();
         List<? extends String> blockBrokenList = InsaneConfig.COMMON.blockBrokenList.get();
         if(!blockBrokenList.isEmpty()) {
             for(String string : blockBrokenList) {
@@ -148,15 +142,14 @@ public class Insane
                     ResourceLocation location = new ResourceLocation(array[0]);
                     double amount = new Double(array[1]);
 
-                    blockBreakMap.put(location, amount);
+                    blockBreakList.put(location, amount);
                 }
             }
         }
-        blockBreakList = blockBreakMap;
     }
 
     @SubscribeEvent
-    public void onServerStarting (FMLServerStartingEvent event) {
-        InsaneCommands.initializeCommands(event.getCommandDispatcher());
+    public void onCommandRegister(RegisterCommandsEvent event) {
+        InsaneCommands.initializeCommands(event.getDispatcher());
     }
 }

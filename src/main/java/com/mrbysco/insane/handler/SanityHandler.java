@@ -52,7 +52,7 @@ public class SanityHandler {
             PlayerEntity player = (PlayerEntity)event.getEntityLiving();
             ResourceLocation registryName = attacker.getType().getRegistryName();
             if(!player.abilities.isCreativeMode && Insane.entitySanityMap.containsKey(registryName)) {
-                SanityUtil.addSanity(player, Insane.entitySanityMap.get(registryName).doubleValue());
+                SanityUtil.addSanity(player, Insane.entitySanityMap.get(registryName));
             }
         }
     }
@@ -97,7 +97,7 @@ public class SanityHandler {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void breakEvent(BreakEvent event) {
-        if(!Insane.foodSanityMap.isEmpty() && !(event.getPlayer() instanceof FakePlayer) && !event.getWorld().getWorld().isRemote) {
+        if(!Insane.foodSanityMap.isEmpty() && !(event.getPlayer() instanceof FakePlayer) && !event.getWorld().isRemote()) {
             PlayerEntity player = event.getPlayer();
             ResourceLocation registryName = event.getState().getBlock().getRegistryName();
             if(!player.abilities.isCreativeMode && Insane.foodSanityMap.containsKey(registryName)) {

@@ -1,6 +1,7 @@
 modLoader="javafml"
-loaderVersion="[31,)"
+loaderVersion="[35,)"
 #issueTrackerURL=""
+license="MIT"
 
 [[mods]]
 modId="insane"
