@@ -17,8 +17,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class ClientHandler {
     private ResourceLocation SANITY_TEXTURES = new ResourceLocation(Reference.MOD_ID, "textures/gui/insanity.png");
 
+    private ResourceLocation DESATURATION_SHADER = new ResourceLocation("shaders/post/desaturate.json");
+
     @SubscribeEvent(priority = EventPriority.LOW)
-    public void onPreRender(RenderGameOverlayEvent.Post event) {
+    public void onPreRender(RenderGameOverlayEvent.Pre event) {
         if (event.getType() != RenderGameOverlayEvent.ElementType.ALL)
             return;
 
@@ -50,6 +52,22 @@ public class ClientHandler {
         double currentSanity = sanity.getSanity();
         double capacity = sanity.getSanityMax();
         double pct = Math.min(currentSanity / capacity, 1.0F);
+
+        if(pct <= 0.2D) {
+            boolean flag = mc.gameRenderer.getShaderGroup() != null && mc.gameRenderer.getShaderGroup().getShaderGroupName().equals(DESATURATION_SHADER.toString());
+            if(!flag && !mc.player.getPersistentData().getBoolean("IsInsane")) {
+                if (mc.gameRenderer.getShaderGroup() != null) {
+                    mc.gameRenderer.stopUseShader();
+                }
+                mc.gameRenderer.loadShader(DESATURATION_SHADER);
+                mc.player.getPersistentData().putBoolean("IsInsane", true);
+            }
+        } else {
+            if (mc.gameRenderer.getShaderGroup() != null && mc.player.getPersistentData().getBoolean("IsInsane")) {
+                mc.player.getPersistentData().remove("IsInsane");
+                mc.gameRenderer.stopUseShader();
+            }
+        }
 
         int brainStage = 0;
         if(pct <= 0.33D) {

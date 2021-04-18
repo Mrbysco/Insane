@@ -25,7 +25,7 @@ import java.util.UUID;
 public class SanityHandler {
     @SubscribeEvent
     public void playerTickEvent(PlayerTickEvent event) {
-        if(event.phase == TickEvent.Phase.START && event.side.isServer() && event.player.world.getGameTime() % 20 == 0) {
+        if(event.phase == TickEvent.Phase.START && event.side.isServer()) {
             PlayerEntity player = event.player;
             BlockPos pos = player.getPosition();
             World world = player.world;
