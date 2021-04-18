@@ -28,7 +28,7 @@ public class InsaneConfig {
 
             minSanity = builder
                     .comment("The min Sanity value [Default: 0.0]")
-                    .defineInRange("maxSanity", 0.0F, Double.MIN_VALUE, Double.MAX_VALUE);
+                    .defineInRange("minSanity", 0.0F, Double.MIN_VALUE, Double.MAX_VALUE);
 
             maxSanity = builder
                     .comment("The max Sanity value [Default: 100.0]")
