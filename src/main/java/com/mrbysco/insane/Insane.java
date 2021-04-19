@@ -9,6 +9,7 @@ import com.mrbysco.insane.config.InsaneConfig;
 import com.mrbysco.insane.handler.CapabilityHandler;
 import com.mrbysco.insane.handler.SanityHandler;
 import com.mrbysco.insane.packets.SanitySyncMessage;
+import com.mrbysco.insane.registry.InsaneRegistry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -53,6 +54,8 @@ public class Insane {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         ModLoadingContext.get().registerConfig(Type.COMMON, InsaneConfig.commonSpec);
         eventBus.register(InsaneConfig.class);
+
+        InsaneRegistry.SOUND_EVENTS.register(eventBus);
 
         eventBus.addListener(this::setup);
 

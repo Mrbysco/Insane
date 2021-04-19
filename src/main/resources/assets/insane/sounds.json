@@ -1,0 +1,14 @@
+{
+    "musicbox" : {
+    "category" : "neutral",
+	"subtitle": "insane.musicbox.subtitle",
+        "sounds": [
+            "insane:musicbox1",
+            "insane:musicbox2",
+            "insane:musicbox3",
+            "insane:musicbox4",
+            "insane:musicbox5",
+            "insane:musicbox6"
+        ]
+    }
+}
