@@ -1,4 +1,4 @@
-package com.mrbysco.insane.capability;
+package com.mrbysco.insane.api.capability;
 
 import com.mrbysco.insane.config.InsaneConfig;
 
@@ -6,13 +6,15 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class SanityCapability implements ISanity {
-    public static double SANITY_MIN = InsaneConfig.COMMON.minSanity.get();
-    public static double SANITY_MAX = InsaneConfig.COMMON.maxSanity.get();
+    public double sanityMin;
+    public double sanityMax;
     private double sanity;
     private boolean dirty;
 
     public SanityCapability() {
-        this.sanity = SanityCapability.SANITY_MAX;
+        this.sanityMin = InsaneConfig.COMMON.minSanity.get();
+        this.sanityMax = InsaneConfig.COMMON.maxSanity.get();
+        this.sanity = this.sanityMax;
     }
 
     @Override
@@ -49,12 +51,22 @@ public class SanityCapability implements ISanity {
 
     @Override
     public double getSanityMin() {
-        return SANITY_MIN;
+        return sanityMin;
+    }
+
+    @Override
+    public void setSanityMin(double min) {
+        this.sanityMin = min;
     }
 
     @Override
     public double getSanityMax() {
-        return SANITY_MAX;
+        return sanityMax;
+    }
+
+    @Override
+    public void setSanityMax(double max) {
+        this.sanityMax = max;
     }
 
     @Override

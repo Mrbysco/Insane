@@ -2,6 +2,7 @@ package com.mrbysco.insane.handler;
 
 import com.mrbysco.insane.Insane;
 import com.mrbysco.insane.config.InsaneConfig;
+import com.mrbysco.insane.registry.SanityMapStorage;
 import com.mrbysco.insane.util.SanityUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -48,44 +49,44 @@ public class SanityHandler {
     @SubscribeEvent
     public void playerDamageEvent(LivingDamageEvent event) {
         Entity attacker = event.getSource().getTrueSource();
-        if(!Insane.entitySanityMap.isEmpty() && event.getEntityLiving() instanceof PlayerEntity && attacker != null && !event.getEntityLiving().world.isRemote) {
+        if(!SanityMapStorage.entitySanityMap.isEmpty() && event.getEntityLiving() instanceof PlayerEntity && attacker != null && !event.getEntityLiving().world.isRemote) {
             PlayerEntity player = (PlayerEntity)event.getEntityLiving();
             ResourceLocation registryName = attacker.getType().getRegistryName();
-            if(!player.abilities.isCreativeMode && Insane.entitySanityMap.containsKey(registryName)) {
-                SanityUtil.addSanity(player, Insane.entitySanityMap.get(registryName));
+            if(!player.abilities.isCreativeMode && SanityMapStorage.entitySanityMap.containsKey(registryName)) {
+                SanityUtil.addSanity(player, SanityMapStorage.entitySanityMap.get(registryName));
             }
         }
     }
 
     @SubscribeEvent
     public void craftingEvent(ItemCraftedEvent event) {
-        if(!Insane.craftingItemList.isEmpty() && !(event.getPlayer() instanceof FakePlayer) && !event.getCrafting().isEmpty() && !event.getEntityLiving().world.isRemote) {
+        if(!SanityMapStorage.craftingItemList.isEmpty() && !(event.getPlayer() instanceof FakePlayer) && !event.getCrafting().isEmpty() && !event.getEntityLiving().world.isRemote) {
             PlayerEntity player = event.getPlayer();
             ResourceLocation registryName = event.getCrafting().getItem().getRegistryName();
-            if(!player.abilities.isCreativeMode && Insane.craftingItemList.containsKey(registryName)) {
-                SanityUtil.addSanity(player, Insane.craftingItemList.get(registryName));
+            if(!player.abilities.isCreativeMode && SanityMapStorage.craftingItemList.containsKey(registryName)) {
+                SanityUtil.addSanity(player, SanityMapStorage.craftingItemList.get(registryName));
             }
         }
     }
 
     @SubscribeEvent
     public void itemEatenEvent(LivingEntityUseItemEvent.Finish event) {
-        if(!Insane.foodSanityMap.isEmpty() && event.getEntityLiving() instanceof PlayerEntity && !(event.getEntityLiving() instanceof FakePlayer) && !event.getItem().isEmpty() && !event.getEntityLiving().world.isRemote) {
+        if(!SanityMapStorage.foodSanityMap.isEmpty() && event.getEntityLiving() instanceof PlayerEntity && !(event.getEntityLiving() instanceof FakePlayer) && !event.getItem().isEmpty() && !event.getEntityLiving().world.isRemote) {
             PlayerEntity player = (PlayerEntity)event.getEntityLiving();
             ResourceLocation registryName = event.getItem().getItem().getRegistryName();
-            if(!player.abilities.isCreativeMode && Insane.foodSanityMap.containsKey(registryName)) {
-                SanityUtil.addSanity(player, Insane.foodSanityMap.get(registryName));
+            if(!player.abilities.isCreativeMode && SanityMapStorage.foodSanityMap.containsKey(registryName)) {
+                SanityUtil.addSanity(player, SanityMapStorage.foodSanityMap.get(registryName));
             }
         }
     }
 
     @SubscribeEvent
     public void itemEatenEvent(EntityItemPickupEvent event) {
-        if(!Insane.pickupItemList.isEmpty() && !(event.getPlayer() instanceof FakePlayer) && !isUUIDKnown(event.getEntityLiving().world, event.getItem().getThrowerId()) && !event.getEntityLiving().world.isRemote) {
+        if(!SanityMapStorage.pickupItemList.isEmpty() && !(event.getPlayer() instanceof FakePlayer) && !isUUIDKnown(event.getEntityLiving().world, event.getItem().getThrowerId()) && !event.getEntityLiving().world.isRemote) {
             PlayerEntity player = event.getPlayer();
             ResourceLocation registryName = event.getItem().getItem().getItem().getRegistryName();
-            if(!player.abilities.isCreativeMode && Insane.pickupItemList.containsKey(registryName)) {
-                SanityUtil.addSanity(player, Insane.pickupItemList.get(registryName));
+            if(!player.abilities.isCreativeMode && SanityMapStorage.pickupItemList.containsKey(registryName)) {
+                SanityUtil.addSanity(player, SanityMapStorage.pickupItemList.get(registryName));
             }
         }
     }
@@ -97,11 +98,11 @@ public class SanityHandler {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void breakEvent(BreakEvent event) {
-        if(!Insane.foodSanityMap.isEmpty() && !(event.getPlayer() instanceof FakePlayer) && !event.getWorld().isRemote()) {
+        if(!SanityMapStorage.foodSanityMap.isEmpty() && !(event.getPlayer() instanceof FakePlayer) && !event.getWorld().isRemote()) {
             PlayerEntity player = event.getPlayer();
             ResourceLocation registryName = event.getState().getBlock().getRegistryName();
-            if(!player.abilities.isCreativeMode && Insane.foodSanityMap.containsKey(registryName)) {
-                SanityUtil.addSanity(player, Insane.foodSanityMap.get(registryName));
+            if(!player.abilities.isCreativeMode && SanityMapStorage.foodSanityMap.containsKey(registryName)) {
+                SanityUtil.addSanity(player, SanityMapStorage.foodSanityMap.get(registryName));
             }
         }
     }

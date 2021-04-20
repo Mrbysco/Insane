@@ -1,6 +1,7 @@
 package com.mrbysco.insane.config;
 
 import com.mrbysco.insane.Insane;
+import com.mrbysco.insane.registry.SanityMapStorage;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
@@ -136,12 +137,12 @@ public class InsaneConfig {
     @SubscribeEvent
     public static void onLoad(final ModConfig.Loading configEvent) {
        Insane.LOGGER.debug("Loaded Insane's config file {}", configEvent.getConfig().getFileName());
-       Insane.updateMaps();
+       SanityMapStorage.updateMaps();
     }
 
     @SubscribeEvent
     public static void onFileChange(final ModConfig.Reloading configEvent) {
         Insane.LOGGER.debug("Insane's config just got changed on the file system!");
-        Insane.updateMaps();
+        SanityMapStorage.updateMaps();
     }
 }

@@ -1,7 +1,7 @@
 package com.mrbysco.insane.packets;
 
-import com.mrbysco.insane.capability.ISanity;
-import com.mrbysco.insane.capability.SanityCapProvider;
+import com.mrbysco.insane.api.capability.ISanity;
+import com.mrbysco.insane.api.capability.SanityCapProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;

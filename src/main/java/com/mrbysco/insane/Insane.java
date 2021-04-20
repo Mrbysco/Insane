@@ -1,9 +1,10 @@
 package com.mrbysco.insane;
 
-import com.mrbysco.insane.capability.ISanity;
-import com.mrbysco.insane.capability.SanityCapability;
-import com.mrbysco.insane.capability.SanityStorage;
+import com.mrbysco.insane.api.capability.ISanity;
+import com.mrbysco.insane.api.capability.SanityCapability;
+import com.mrbysco.insane.api.capability.SanityStorage;
 import com.mrbysco.insane.client.ClientHandler;
+import com.mrbysco.insane.client.OverlayHandler;
 import com.mrbysco.insane.commands.InsaneCommands;
 import com.mrbysco.insane.config.InsaneConfig;
 import com.mrbysco.insane.handler.CapabilityHandler;
@@ -29,9 +30,6 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
-import java.util.List;
-
 @Mod(Reference.MOD_ID)
 public class Insane {
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
@@ -43,12 +41,6 @@ public class Insane {
             PROTOCOL_VERSION::equals,
             PROTOCOL_VERSION::equals
     );
-
-    public static final HashMap<ResourceLocation, Double> entitySanityMap = new HashMap<>();
-    public static final HashMap<ResourceLocation, Double> foodSanityMap = new HashMap<>();
-    public static final HashMap<ResourceLocation, Double> craftingItemList = new HashMap<>();
-    public static final HashMap<ResourceLocation, Double> pickupItemList = new HashMap<>();
-    public static final HashMap<ResourceLocation, Double> blockBreakList = new HashMap<>();
 
     public Insane() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -70,85 +62,16 @@ public class Insane {
         MinecraftForge.EVENT_BUS.register(new SanityHandler());
         MinecraftForge.EVENT_BUS.addListener(this::onCommandRegister);
 
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> MinecraftForge.EVENT_BUS.register(new ClientHandler()));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+            eventBus.addListener(ClientHandler::onClientSetup);
+            MinecraftForge.EVENT_BUS.register(new OverlayHandler());
+        });
     }
 
     private void setup(final FMLCommonSetupEvent event) {
         CHANNEL.registerMessage(0, SanitySyncMessage.class, SanitySyncMessage::encode, SanitySyncMessage::decode, SanitySyncMessage::handle);
 
         CapabilityManager.INSTANCE.register(ISanity.class, new SanityStorage(), SanityCapability::new);
-    }
-
-    public static void updateMaps() {
-        entitySanityMap.clear();
-        List<? extends String> mobList = InsaneConfig.COMMON.mobDamageList.get();
-        if(!mobList.isEmpty()) {
-            for(String string : mobList) {
-                String[] array = string.split(",");
-                if(array.length == 2) {
-                    ResourceLocation location = new ResourceLocation(array[0]);
-                    double amount = new Double(array[1]);
-
-                    entitySanityMap.put(location, amount);
-                }
-            }
-        }
-
-        foodSanityMap.clear();
-        List<? extends String> foodList = InsaneConfig.COMMON.rawFoodList.get();
-        if(!foodList.isEmpty()) {
-            for(String string : foodList) {
-                String[] array = string.split(",");
-                if(array.length == 2) {
-                    ResourceLocation location = new ResourceLocation(array[0]);
-                    double amount = new Double(array[1]);
-
-                    foodSanityMap.put(location, amount);
-                }
-            }
-        }
-
-        craftingItemList.clear();
-        List<? extends String> craftingItems = InsaneConfig.COMMON.craftingItemList.get();
-        if(!craftingItems.isEmpty()) {
-            for(String string : craftingItems) {
-                String[] array = string.split(",");
-                if(array.length == 2) {
-                    ResourceLocation location = new ResourceLocation(array[0]);
-                    double amount = new Double(array[1]);
-
-                    craftingItemList.put(location, amount);
-                }
-            }
-        }
-
-        pickupItemList.clear();
-        List<? extends String> pickupItems = InsaneConfig.COMMON.pickupItemList.get();
-        if(!pickupItems.isEmpty()) {
-            for(String string : pickupItems) {
-                String[] array = string.split(",");
-                if(array.length == 2) {
-                    ResourceLocation location = new ResourceLocation(array[0]);
-                    double amount = new Double(array[1]);
-
-                    pickupItemList.put(location, amount);
-                }
-            }
-        }
-
-        blockBreakList.clear();
-        List<? extends String> blockBrokenList = InsaneConfig.COMMON.blockBrokenList.get();
-        if(!blockBrokenList.isEmpty()) {
-            for(String string : blockBrokenList) {
-                String[] array = string.split(",");
-                if(array.length == 2) {
-                    ResourceLocation location = new ResourceLocation(array[0]);
-                    double amount = new Double(array[1]);
-
-                    blockBreakList.put(location, amount);
-                }
-            }
-        }
     }
 
     @SubscribeEvent

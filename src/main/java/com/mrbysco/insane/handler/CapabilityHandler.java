@@ -2,8 +2,8 @@ package com.mrbysco.insane.handler;
 
 import com.mrbysco.insane.Insane;
 import com.mrbysco.insane.Reference;
-import com.mrbysco.insane.capability.ISanity;
-import com.mrbysco.insane.capability.SanityCapProvider;
+import com.mrbysco.insane.api.capability.ISanity;
+import com.mrbysco.insane.api.capability.SanityCapProvider;
 import com.mrbysco.insane.packets.SanitySyncMessage;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;

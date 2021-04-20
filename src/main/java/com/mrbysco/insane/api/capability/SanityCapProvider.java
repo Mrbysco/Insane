@@ -1,4 +1,4 @@
-package com.mrbysco.insane.capability;
+package com.mrbysco.insane.api.capability;
 
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;

@@ -1,9 +1,9 @@
 package com.mrbysco.insane.util;
 
 import com.mrbysco.insane.Insane;
-import com.mrbysco.insane.capability.ISanity;
-import com.mrbysco.insane.capability.SanityCapProvider;
-import com.mrbysco.insane.capability.SanityCapability;
+import com.mrbysco.insane.api.capability.ISanity;
+import com.mrbysco.insane.api.capability.SanityCapProvider;
+import com.mrbysco.insane.api.capability.SanityCapability;
 import com.mrbysco.insane.packets.SanitySyncMessage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;

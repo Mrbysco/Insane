@@ -1,4 +1,4 @@
-package com.mrbysco.insane.capability;
+package com.mrbysco.insane.api.capability;
 
 public interface ISanity {
     double getSanity();
@@ -11,5 +11,9 @@ public interface ISanity {
 
     double getSanityMax();
 
+    void setSanityMax(double max);
+
     double getSanityMin();
+
+    void setSanityMin(double min);
 }
