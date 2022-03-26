@@ -1,20 +1,25 @@
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
+        // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
+        maven { url = 'https://maven.minecraftforge.net' }
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
+//Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+plugins {
+    id 'maven-publish'
+}
 apply plugin: 'net.minecraftforge.gradle'
-// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 version = "${version}"
 group = 'com.mrbysco.insane' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Insane-${mc_version}"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
+// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
@@ -33,6 +38,9 @@ minecraft {
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
 
+            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+            property 'forge.enabledGameTestNamespaces', 'insane'
+
             mods {
                 insane {
                     source sourceSets.main
@@ -48,6 +56,9 @@ minecraft {
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
+
+            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+            property 'forge.enabledGameTestNamespaces', 'insane'
 
             mods {
                 insane {
@@ -65,7 +76,11 @@ minecraft {
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
 
+            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
             args '--mod', 'insane', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+            property 'forge.enabledGameTestNamespaces', 'insane'
 
             mods {
                 insane {
@@ -81,24 +96,25 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     maven {
-        name 'JEI maven'
+        name = 'JEI maven'
         url = "https://dvs1.progwml6.com/files/maven"
     }
 	maven {
-        url "https://maven.blamejared.com"
+        url = "https://maven.blamejared.com"
 	}
-	maven { 
-		url 'https://maven.mcmoddev.com' 
-	}
+    maven {
+        name = 'LDTTeam - Modding'
+        url = 'https://ldtteam.jfrog.io/ldtteam/modding/'
+    }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
-    compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${mc_version}:${crafttweaker_version}")
-    
-    compileOnly fg.deobf("mezz.jei:jei-1.16.5:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:${jei_version}")
+    implementation fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
+
+//    compileOnly fg.deobf("com.ldtteam:per_viam_invenire:${mc_version}-${pvi_version}:api")
+//    runtimeOnly fg.deobf("com.ldtteam:per_viam_invenire:${mc_version}-${pvi_version}:universal")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

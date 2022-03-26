@@ -2,47 +2,55 @@ package com.mrbysco.insane.util;
 
 import com.mrbysco.insane.Insane;
 import com.mrbysco.insane.api.capability.ISanity;
-import com.mrbysco.insane.api.capability.SanityCapProvider;
 import com.mrbysco.insane.api.capability.SanityCapability;
+import com.mrbysco.insane.handler.CapabilityHandler;
 import com.mrbysco.insane.packets.SanitySyncMessage;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 
 public class SanityUtil {
-    public static void syncSanity(ISanity sanity, PlayerEntity player) {
-        if (sanity.getSanity() > sanity.getSanityMax()){  sanity.setSanity(sanity.getSanityMax()); }
-        if (sanity.getSanity() < sanity.getSanityMin()){  sanity.setSanity(sanity.getSanityMin()); }
-        Insane.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new SanitySyncMessage(sanity, player.getUniqueID()));
-    }
+	public static void syncSanity(ISanity sanity, Player player) {
+		if (sanity.getSanity() > sanity.getSanityMax()) {
+			sanity.setSanity(sanity.getSanityMax());
+		}
+		if (sanity.getSanity() < sanity.getSanityMin()) {
+			sanity.setSanity(sanity.getSanityMin());
+		}
+		Insane.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new SanitySyncMessage(sanity, player.getUUID()));
+	}
 
-    public static void addSanity(PlayerEntity player, double amount) {
-        LazyOptional<ISanity> sanityCap = player.getCapability(SanityCapProvider.SANITY_CAPABILITY, null);
-        sanityCap.ifPresent(c -> {
-            double currentSanity = c.getSanity();
-            double newSanity = currentSanity + amount;
-            if(newSanity > c.getSanityMax()) { newSanity = c.getSanityMax(); }
-            if(newSanity < c.getSanityMin()) { newSanity = c.getSanityMin(); }
-            c.setSanity(newSanity);
-            syncSanity(c, player);
-        });
-    }
+	public static void addSanity(Player player, double amount) {
+		LazyOptional<ISanity> sanityCap = player.getCapability(CapabilityHandler.SANITY_CAPABILITY, null);
+		sanityCap.ifPresent(c -> {
+			double currentSanity = c.getSanity();
+			double newSanity = currentSanity + amount;
+			if (newSanity > c.getSanityMax()) {
+				newSanity = c.getSanityMax();
+			}
+			if (newSanity < c.getSanityMin()) {
+				newSanity = c.getSanityMin();
+			}
+			c.setSanity(newSanity);
+			syncSanity(c, player);
+		});
+	}
 
-    public static void setSanity(PlayerEntity player, double newSanity) {
-        LazyOptional<ISanity> sanityCap = player.getCapability(SanityCapProvider.SANITY_CAPABILITY, null);
-        sanityCap.ifPresent(c -> {
-            c.setSanity(newSanity);
-            syncSanity(c, player);
-        });
-    }
+	public static void setSanity(Player player, double newSanity) {
+		LazyOptional<ISanity> sanityCap = player.getCapability(CapabilityHandler.SANITY_CAPABILITY, null);
+		sanityCap.ifPresent(c -> {
+			c.setSanity(newSanity);
+			syncSanity(c, player);
+		});
+	}
 
-    public static double getSanity(PlayerEntity player) {
-        LazyOptional<ISanity> sanityCap = player.getCapability(SanityCapProvider.SANITY_CAPABILITY, null);
-        if(sanityCap.isPresent()) {
-            ISanity sanity = sanityCap.orElse(new SanityCapability());
-            return sanity.getSanity();
-        }
-        return 0;
-    }
+	public static double getSanity(Player player) {
+		LazyOptional<ISanity> sanityCap = player.getCapability(CapabilityHandler.SANITY_CAPABILITY, null);
+		if (sanityCap.isPresent()) {
+			ISanity sanity = sanityCap.orElse(new SanityCapability());
+			return sanity.getSanity();
+		}
+		return 0;
+	}
 }

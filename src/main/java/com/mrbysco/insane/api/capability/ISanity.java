@@ -1,19 +1,17 @@
 package com.mrbysco.insane.api.capability;
 
 public interface ISanity {
-    double getSanity();
+	double getSanity();
 
-    void setSanity(double sanity);
+	void setSanity(double sanity);
 
-    boolean isDirty();
+	boolean isDirty();
 
-    void setDirty(boolean dirty);
+	void setDirty(boolean dirty);
 
-    double getSanityMax();
+	double getSanityMax();
 
-    void setSanityMax(double max);
+	void setSanityMax(double max);
 
-    double getSanityMin();
-
-    void setSanityMin(double min);
+	double getSanityMin();
 }
