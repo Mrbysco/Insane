@@ -1,7 +1,6 @@
 package com.mrbysco.insane;
 
 import com.mrbysco.insane.client.ClientHandler;
-import com.mrbysco.insane.client.OverlayHandler;
 import com.mrbysco.insane.commands.InsaneCommands;
 import com.mrbysco.insane.config.InsaneConfig;
 import com.mrbysco.insane.handler.CapabilityHandler;
@@ -60,7 +59,6 @@ public class Insane {
 
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			eventBus.addListener(ClientHandler::onClientSetup);
-			MinecraftForge.EVENT_BUS.register(new OverlayHandler());
 		});
 	}
 

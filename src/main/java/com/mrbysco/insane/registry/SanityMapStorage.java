@@ -21,7 +21,7 @@ public class SanityMapStorage {
 				String[] array = string.split(",");
 				if (array.length == 2) {
 					ResourceLocation location = new ResourceLocation(array[0]);
-					double amount = new Double(array[1]);
+					double amount = Double.parseDouble(array[1]);
 
 					entitySanityMap.put(location, amount);
 				}
@@ -35,7 +35,7 @@ public class SanityMapStorage {
 				String[] array = string.split(",");
 				if (array.length == 2) {
 					ResourceLocation location = new ResourceLocation(array[0]);
-					double amount = new Double(array[1]);
+					double amount = Double.parseDouble(array[1]);
 
 					foodSanityMap.put(location, amount);
 				}
@@ -49,7 +49,7 @@ public class SanityMapStorage {
 				String[] array = string.split(",");
 				if (array.length == 2) {
 					ResourceLocation location = new ResourceLocation(array[0]);
-					double amount = new Double(array[1]);
+					double amount = Double.parseDouble(array[1]);
 
 					craftingItemList.put(location, amount);
 				}
@@ -63,7 +63,7 @@ public class SanityMapStorage {
 				String[] array = string.split(",");
 				if (array.length == 2) {
 					ResourceLocation location = new ResourceLocation(array[0]);
-					double amount = new Double(array[1]);
+					double amount = Double.parseDouble(array[1]);
 
 					pickupItemList.put(location, amount);
 				}
@@ -77,7 +77,7 @@ public class SanityMapStorage {
 				String[] array = string.split(",");
 				if (array.length == 2) {
 					ResourceLocation location = new ResourceLocation(array[0]);
-					double amount = new Double(array[1]);
+					double amount = Double.parseDouble(array[1]);
 
 					blockBreakList.put(location, amount);
 				}

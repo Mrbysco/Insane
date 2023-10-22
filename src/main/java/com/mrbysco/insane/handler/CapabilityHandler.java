@@ -9,7 +9,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -17,7 +16,6 @@ import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.network.PacketDistributor;
@@ -42,27 +40,26 @@ public class CapabilityHandler {
 
 	@SubscribeEvent
 	public void playerStartTracking(PlayerEvent.StartTracking event) {
-		if (event.getPlayer() instanceof ServerPlayer) {
-			Player player = event.getPlayer();
+		Player player = event.getEntity();
+		if (!player.level().isClientSide) {
 			LazyOptional<ISanity> sanityCap = player.getCapability(CapabilityHandler.SANITY_CAPABILITY, null);
 			sanityCap.ifPresent(c -> Insane.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> player), new SanitySyncMessage(c, player.getUUID())));
 		}
 	}
 
 	@SubscribeEvent
-	public void entityJoinWorldEvent(EntityJoinWorldEvent event) {
-		if (event.getEntity() instanceof Player && !event.getWorld().isClientSide) {
-			Level world = event.getWorld();
-			Player joiningPlayer = (Player) event.getEntity();
+	public void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
+		Player joiningPlayer = event.getEntity();
+		if (!joiningPlayer.level().isClientSide) {
 			BlockPos playerPos = joiningPlayer.blockPosition();
 
-			AABB hitbox = new AABB(playerPos.getX() - 0.5f, playerPos.getY() - 0.5f, playerPos.getZ() - 0.5f, playerPos.getX() + 0.5f, playerPos.getY() + 0.5f, playerPos.getZ() + 0.5f).expandTowards(-5, -5, -5).expandTowards(5, 5, 5);
+			AABB hitbox = new AABB(playerPos).inflate(5);
 
 			//Send the joining player their own Sanity to their client
 			LazyOptional<ISanity> playerCap = joiningPlayer.getCapability(CapabilityHandler.SANITY_CAPABILITY, null);
 			playerCap.ifPresent(c -> Insane.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) joiningPlayer), new SanitySyncMessage(c, joiningPlayer.getUUID())));
 			//Send the joining player the sanity of nearby players
-			List<Player> nearbyPlayers = world.getEntitiesOfClass(Player.class, hitbox);
+			List<Player> nearbyPlayers = joiningPlayer.level().getEntitiesOfClass(Player.class, hitbox);
 			for (Player player : nearbyPlayers) {
 				LazyOptional<ISanity> sanityCap = player.getCapability(CapabilityHandler.SANITY_CAPABILITY, null);
 				sanityCap.ifPresent(c -> Insane.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) joiningPlayer), new SanitySyncMessage(c, player.getUUID())));

@@ -1,61 +1,62 @@
 package com.mrbysco.insane.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mrbysco.insane.Insane;
 import com.mrbysco.insane.Reference;
 import com.mrbysco.insane.api.capability.ISanity;
 import com.mrbysco.insane.handler.CapabilityHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.BookViewScreen;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
+import java.sql.Ref;
+
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class OverlayHandler {
-	private ResourceLocation SANITY_TEXTURES = new ResourceLocation(Reference.MOD_ID, "textures/gui/insanity.png");
+	private static final ResourceLocation SANITY_OVERLAY = new ResourceLocation(Reference.MOD_ID, "sanity");
+	private static final ResourceLocation SANITY_TEXTURES = new ResourceLocation(Reference.MOD_ID, "textures/gui/insanity.png");
 
-	private ResourceLocation DESATURATION_SHADER = new ResourceLocation("shaders/post/desaturate.json");
+	private static final ResourceLocation DESATURATION_SHADER = new ResourceLocation("shaders/post/desaturate.json");
 
 	@SubscribeEvent(priority = EventPriority.LOW)
-	public void onPreRender(RenderGameOverlayEvent.Pre event) {
-		if (event.getType() != RenderGameOverlayEvent.ElementType.ALL)
-			return;
+	public static void registerOverlayRenderer(RegisterGuiOverlaysEvent event) {
+		event.registerAboveAll("sanity", OverlayHandler::draw);
+		Insane.LOGGER.error("Registered sanity overlay");
+	}
 
-		Minecraft mc = Minecraft.getInstance();
-		Player player = mc.player;
-		PoseStack matrixStack = event.getMatrixStack();
-		if (player != null && mc.gui instanceof ForgeIngameGui ingameGui) {
-			int left = mc.getWindow().getGuiScaledWidth() / 2 + 91;
-			int top = mc.getWindow().getGuiScaledHeight() - ingameGui.right_height;
+	private static void draw(ForgeGui gui, GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight) {
+		Entity cameraEntity = Minecraft.getInstance().cameraEntity;
+		if (cameraEntity instanceof Player player) {
+			int left = screenWidth / 2 + 91;
+			int top = screenHeight - gui.rightHeight;
 
 			LazyOptional<ISanity> sanityCap = player.getCapability(CapabilityHandler.SANITY_CAPABILITY);
 			if (sanityCap.isPresent()) {
 				ISanity sanity = sanityCap.orElse(null);
 				if (sanity != null) {
-					System.out.println(sanity.getSanityMin());
-					System.out.println(sanity.getSanityMax());
-					drawSanity(matrixStack, sanity);
-					mc.font.draw(matrixStack, String.valueOf(sanity.getSanity()), left, top, 553648127);
+//					System.out.println(sanity.getSanityMin());
+//					System.out.println(sanity.getSanityMax());
+					drawSanity(guiGraphics, sanity);
+					guiGraphics.drawString(gui.getFont(), String.valueOf(sanity.getSanity()), left, top, 553648127, false);
 				}
 			}
 		}
 	}
 
-	private void drawSanity(PoseStack matrixStack, ISanity sanity) {
+	private static void drawSanity(GuiGraphics guiGraphics, ISanity sanity) {
 		if (sanity == null) {
 			return;
 		}
 
-		Minecraft mc = Minecraft.getInstance();
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		RenderSystem.setShaderTexture(0, SANITY_TEXTURES);
+		final Minecraft mc = Minecraft.getInstance();
 
 		double currentSanity = sanity.getSanity();
 		double capacity = sanity.getSanityMax();
@@ -89,19 +90,19 @@ public class OverlayHandler {
 			scaleFactor = 1.0D;
 		}
 
-		Screen.blit(matrixStack, (int) scaleFactor * 20, (int) scaleFactor * 20, (int) (32 * scaleFactor), (int) (0 * scaleFactor),
+		guiGraphics.blit(SANITY_TEXTURES, (int) scaleFactor * 20, (int) scaleFactor * 20, (int) (32 * scaleFactor), (int) (0 * scaleFactor),
 				(int) (24 * scaleFactor), (int) (24 * scaleFactor),
 				(int) (256 * scaleFactor), (int) (256 * scaleFactor));
 
-		Screen.blit(matrixStack, (int) scaleFactor * 20, (int) (scaleFactor * (20 + Math.ceil((24 - 24 * pct)))), (int) (32 * scaleFactor), (int) (24 * scaleFactor),
+		guiGraphics.blit(SANITY_TEXTURES, (int) scaleFactor * 20, (int) (scaleFactor * (20 + Math.ceil((24 - 24 * pct)))), (int) (32 * scaleFactor), (int) (24 * scaleFactor),
 				(int) (24 * scaleFactor), (int) (24 * pct * scaleFactor),
 				(int) (256 * scaleFactor), (int) (256 * scaleFactor));
 
-		Screen.blit(matrixStack, (int) scaleFactor * 20, (int) scaleFactor * 20, (int) (80 * scaleFactor), (int) (brainStage * scaleFactor),
+		guiGraphics.blit(SANITY_TEXTURES, (int) scaleFactor * 20, (int) scaleFactor * 20, (int) (80 * scaleFactor), (int) (brainStage * scaleFactor),
 				(int) (24 * scaleFactor), (int) (24 * scaleFactor),
 				(int) (256 * scaleFactor), (int) (256 * scaleFactor));
 
-		Screen.blit(matrixStack, (int) scaleFactor * 16, (int) scaleFactor * 16, 0, 0,
+		guiGraphics.blit(SANITY_TEXTURES, (int) scaleFactor * 16, (int) scaleFactor * 16, 0, 0,
 				(int) (32 * scaleFactor), (int) (32 * scaleFactor),
 				(int) (256 * scaleFactor), (int) (256 * scaleFactor));
 	}

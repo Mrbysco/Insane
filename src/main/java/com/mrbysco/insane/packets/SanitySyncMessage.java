@@ -23,7 +23,7 @@ public class SanitySyncMessage {
 	}
 
 	public SanitySyncMessage(ISanity sanity, UUID playerUUID) {
-		this.data = (CompoundTag) SanityCapability.writeNBT(sanity);
+		this.data = SanityCapability.writeNBT(sanity);
 		this.playerUUID = playerUUID;
 	}
 

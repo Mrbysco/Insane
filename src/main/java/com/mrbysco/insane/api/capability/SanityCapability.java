@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class SanityCapability implements ISanity, ICapabilitySerializable<CompoundTag>, ICapabilityProvider {
-	public double sanityMin;
+	public final double sanityMin;
 	public double sanityMax;
 	private double sanity;
 	private boolean dirty;
@@ -111,9 +111,5 @@ public class SanityCapability implements ISanity, ICapabilitySerializable<Compou
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
 		return CapabilityHandler.SANITY_CAPABILITY.orEmpty(cap, LazyOptional.of(() -> this));
-	}
-
-	public final Capability<ISanity> getCapability() {
-		return CapabilityHandler.SANITY_CAPABILITY;
 	}
 }

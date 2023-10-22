@@ -11,5 +11,5 @@ public class InsaneRegistry {
 	public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, Reference.MOD_ID);
 
 	public static final RegistryObject<SoundEvent> MUSICBOX = SOUND_EVENTS.register("musicbox", () ->
-			new SoundEvent(new ResourceLocation(Reference.MOD_ID, "musicbox")));
+			SoundEvent.createVariableRangeEvent(new ResourceLocation(Reference.MOD_ID, "musicbox")));
 }
